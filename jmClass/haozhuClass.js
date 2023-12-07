@@ -5,6 +5,7 @@ const Common = require('../common')
 
 class haozhuClass extends Common {
   constructor() {
+    super()
     this.jmToken = ''
   }
   /**
