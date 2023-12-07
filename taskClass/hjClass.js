@@ -3,39 +3,32 @@ const fs = require('fs')
 const path = require('path')
 const Common = require('../common')
 
-class TaskClass {
-  constructor(openId) {
-    this.apiUrl = 'https://index.amcfortune.com'
+class TaskClass extends Common {
+  constructor(config = {}) {
+    super(config)
     this.param = null
     this.success_num = 0
-    this.openId = openId
+    this.openId = config?.openId
   }
   async request(opt = {}) {
     try {
       let httpParam = {
         headers: {
-          Referer: 'https://servicewechat.com/wx1b44c3ad181bde16/28/page-frame.html',
+          'Referer': 'https://servicewechat.com/wx1b44c3ad181bde16/28/page-frame.html',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309071d)XWEB/8461',
-          xweb_xhr: 1,
+          'xweb_xhr': 1,
           pro: 'RedRocket',
           pla: 'rr_windows',
           ticket: this.token,
           Host: 'index.amcfortune.com',
           'Content-Type': 'application/json'
-        }
+        },
+        statusInfo: 'code'
       }
       Object.assign(httpParam, opt)
-      const ret = await got({
-        url: `${this.apiUrl}${httpParam?.url}`,
-        method: httpParam?.method ? httpParam?.method : 'post',
-        searchParams: httpParam?.searchParams,
-        headers: httpParam?.headers,
-        // body: new URLSearchParams(httpParam?.body).toString()
-        json: httpParam?.body
-      }).json()
-      return { statusCode: ret?.code != undefined ? ret?.code : -1, result: ret?.code == 200 ? ret : ret?.msg, prize_list: ret?.prize_list || [] }
+      return await this.send(httpParam)
     } catch (error) {
-      Common.log(error)
+      this.log(error)
     }
   }
   async sendSmsCode(mobile) {
@@ -48,14 +41,13 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode != 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
-    Common.log(`手机号：${mobile} 发送短信成功`)
+    this.log(`手机号：${mobile} 发送短信成功`)
 
-    this.requestId = result?.data.requestId
+   return result?.data.requestId
   }
-  async login(mobile, code) {
-    console.log(mobile, code, this.requestId)
+  async login(mobile, code,requestId) {
     const params = {
       url: '/fundex-uc/uc/v1/login',
       body: {
@@ -63,7 +55,7 @@ class TaskClass {
         platform: 'mini_fundex',
         phoneNo: mobile,
         captchaNo: code,
-        requestId: this.requestId,
+        requestId: requestId,
         openId: 'o-Sr_5PoDJaQKIOd8tahW9dtFwjo',
         unionId: 'ovvDH5q99n6opyQEmn9UVcdN3ohM',
         signAgreement: '为了更好地保障您的合法权益，请您阅读并同意用户协议、隐私政策',
@@ -72,9 +64,9 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode != 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
-    Common.log(`手机号：${mobile} 登录成功`)
+    this.log(`手机号：${mobile} 登录成功`)
     this.token = result?.data.token
     await this.get_red_packet()
   }
@@ -85,7 +77,7 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode != 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
     let tiCode = result?.data.ticketCode
 
@@ -104,7 +96,7 @@ class TaskClass {
     }
     const ret = await got(params).json()
     if (ret?.success) {
-      Common.log(`兑换成功`)
+      this.log(`兑换成功`)
       this.success_num++
     }
   }

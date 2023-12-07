@@ -3,8 +3,9 @@ const jmConfig = require('../config/jmConfig')
 const jm = jmConfig.yezi
 const Common = require('../common')
 
-class yeziClass {
+class yeziClass extends Common {
   constructor() {
+    super()
     this.jmToken = ''
   }
   /**
@@ -14,9 +15,9 @@ class yeziClass {
     const res = await got(`${jm.api}/api/logins?username=${jm.account}&password=${jm.password}`).json()
     if (res.data) {
       this.jmToken = res.token
-      Common.log(`ID: ${res.data[0].id} 登录成功,余额: ${res.data[0].money}元`)
+      this.log(`ID: ${res.data[0].id} 登录成功,余额: ${res.data[0].money}元`)
     } else {
-      Common.log('接码平台登录失败')
+      this.log('接码平台登录失败')
     }
   }
   /**
@@ -28,10 +29,10 @@ class yeziClass {
   async getPhone(projectId) {
     const res = await got(`${jm.api}/api/get_mobile?token=${this.jmToken}&project_id=${projectId}&loop=${jm.loop}&operator=${jm.operator}&api_id=243158&scope_black=${jm.scopeBlack}`).json()
     if (res.message === 'ok') {
-      Common.log(`获取号码成功: ${res.mobile}`)
+      this.log(`获取号码成功: ${res.mobile}`)
       return res.mobile
     } else {
-      Common.log('获取号码失败')
+      this.log('获取号码失败')
     }
   }
   /**
@@ -49,11 +50,11 @@ class yeziClass {
       const res = await got(`${jm.api}/api/get_message?token=${this.jmToken}&phone_num=${mobile}&project_id=${projectId}`).json()
       if (res.data.length) {
         code = res.code
-        Common.log(`${mobile}获取短信成功: ${code}`)
+        this.log(`${mobile}获取短信成功: ${code}`)
         break
       }
-      await Common.wait(2000)
-      Common.log(`${mobile}等待短信中... ${i}/30`)
+      await this.wait(2000)
+      this.log(`${mobile}等待短信中... ${i}/30`)
       i++
     }
     await this.releasePhone(mobile)
@@ -67,9 +68,9 @@ class yeziClass {
   async releasePhone(mobile) {
     const res = await got(`${jm.api}/api/free_mobile?token=${this.jmToken}&phone_num=${mobile}&project_id=${jm.projectId}`).json()
     if (res.message === 'ok') {
-      Common.log(`释放手机号: ${mobile}`)
+      this.log(`释放手机号: ${mobile}`)
     } else {
-      Common.log('释放手机号失败')
+      this.log('释放手机号失败')
     }
   }
 }

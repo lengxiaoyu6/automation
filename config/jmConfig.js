@@ -12,8 +12,8 @@
 module.exports = {
   yezi: {
     api: 'http://api.sqhyw.net:90',
-    account: '',
-    password: '',
+    account: '13263860590',
+    password: 'wang520QQ',
     scopeBlack: '192,165,162,167',
     loop: 1,
     operator: 0
@@ -27,5 +27,5 @@ module.exports = {
     paragraph: '', //只取号段，留空为不限制 使用 | 符号
     exclude: '' //排除号段，留空为不限制 使用 | 符号
   },
-  use: 'haozhu' //使用的平台
+  use: 'yezi' //使用的平台
 }

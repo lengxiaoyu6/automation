@@ -5,10 +5,10 @@ const Common = require('../common')
 const getApiInstance = require('../jmClass/jmClass')
 const apiInstance = getApiInstance()
 
-class TaskClass {
-  constructor() {
+class TaskClass extends Common {
+  constructor(config={}) {
+    super(config)
     this.param = null
-    this.apiUrl = 'https://tb.mocentre.cn/Wap/SetWord'
   }
   async request(opt = {}) {
     try {
@@ -20,16 +20,9 @@ class TaskClass {
         }
       }
       Object.assign(httpParam, opt)
-      const ret = await got({
-        url: `${this.apiUrl}${httpParam?.url}`,
-        method: httpParam?.method ? httpParam?.method : 'post',
-        searchParams: httpParam?.searchParams,
-        headers: httpParam?.headers,
-        body: new URLSearchParams(httpParam?.body).toString()
-      }).json()
-      return { statusCode: ret?.code != undefined ? ret?.code : -1, result: ret?.code == 200 ? ret : ret?.msg }
+      return await this.send(httpParam)
     } catch (error) {
-      Common.log(error)
+      this.log(error)
     }
   }
   async sendSmsCode(mobile) {
@@ -43,9 +36,9 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode !== 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
-    Common.log(`手机号：${mobile} 发送短信成功`)
+    this.log(`手机号：${mobile} 发送短信成功`)
   }
   /**
    * 登录
@@ -62,17 +55,17 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode !== 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
-    Common.log(`手机号：${mobile} 登录成功`)
+    this.log(`手机号：${mobile} 登录成功`)
     this.param = result.param
     const dataFolderPath = path.join(__dirname, '../data')
     if (!fs.existsSync(dataFolderPath)) {
       fs.mkdirSync(dataFolderPath)
     }
     fs.appendFileSync(path.join(dataFolderPath, 'param.txt'), `${mobile}@${this.param}\n`)
-    Common.log(`${mobile}准备点灯`)
-    Common.wait(1000)
+    this.log(`${mobile}准备点灯`)
+    this.wait(1000)
     await this.receive(mobile)
   }
   /**
@@ -88,11 +81,11 @@ class TaskClass {
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode !== 200) {
-      return Common.log(`${result}`)
+      return this.log(`${result}`)
     }
-    Common.log(`${mobile} 点灯成功`)
+    this.log(`${mobile} 点灯成功`)
     if (token) {
-      Common.wait(1000)
+      this.wait(1000)
       await apiInstance.releasePhone(mobile)
     }
   }
