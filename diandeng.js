@@ -1,17 +1,24 @@
-const TaskClass = require('./taskClass')
-const config = require('./config/config')
+const TaskClass = require('./taskClass/diandnegClass')
 const fs = require('fs')
 const path = require('path')
 const task = new TaskClass()
+const getApiInstance = require('./jmClass/jmClass')
+const apiInstance = getApiInstance()
+
+const numberOfTasks = 1 //任务数量
+const registrationStatus = true //是否开启注册,false为养号
+const projectId = '51000' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
+const uid = '' //使用豪猪平台时填写对接码，可为空
+
 const main = async () => {
-  if (config.registrationStatus) {
-    await task.jmLogin()
-    for (let i = 0; i < config.numberOfTasks; i++) {
+  if (registrationStatus) {
+    await apiInstance.jmLogin()
+    for (let i = 0; i < numberOfTasks; i++) {
       console.log(`第${i + 1}次任务开始`)
-      const mobile = await task.getPhone()
+      const mobile = await apiInstance.getPhone(projectId)
       if (mobile) {
         await task.sendSmsCode(mobile)
-        const code = await task.getSms(mobile)
+        const code = await apiInstance.getSms(mobile, projectId)
         if (code) {
           await task.login(mobile, code)
         } else {

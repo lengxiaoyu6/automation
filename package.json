@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "got": "^11.8.6"
+    "got": "^11.8.6",
+    "p-limit": "^2.3.0"
   }
 }
