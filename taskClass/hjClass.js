@@ -43,7 +43,7 @@ class TaskClass extends Common {
     if (statusCode != 200) {
       return this.log(`${result}`)
     }
-    this.log(`手机号：${mobile} 发送短信成功`)
+    this.log(`手机号：${mobile} 发送短信成功`,'yellow')
 
    return result?.data.requestId
   }
@@ -66,7 +66,7 @@ class TaskClass extends Common {
     if (statusCode != 200) {
       return this.log(`${result}`)
     }
-    this.log(`手机号：${mobile} 登录成功`)
+    this.log(`手机号：${mobile} 登录成功`,'bule')
     this.token = result?.data.token
     await this.get_red_packet()
   }
@@ -80,8 +80,31 @@ class TaskClass extends Common {
       return this.log(`${result}`)
     }
     let tiCode = result?.data.ticketCode
+    if (tiCode) {
+      this.log(`获取到码子: ${tiCode}`,'green')
+      await this.exchange(tiCode)
+    }else{
+      await this.search_red_packet()
+    }
+    
+  }
+  async search_red_packet() {
+    const params = {
+      url: `/fundex-activity/redPacket/getUnclaimedList?key=${Date.now()}`,
+      method: 'get'
+    }
+    const { statusCode, result } = await this.request(params)
+    if (statusCode != 200) {
+      return this.log(`${result}`)
+    }
+    let tiCode = result?.data[0]?.ticketCode
+    if (tiCode) {
+      this.log(`偷了一个码子: ${tiCode}`,'green')
+      await this.exchange(tiCode)
+    }else{
 
-    await this.exchange(tiCode)
+    }
+    
   }
   async exchange(code) {
     const params = {
@@ -96,8 +119,10 @@ class TaskClass extends Common {
     }
     const ret = await got(params).json()
     if (ret?.success) {
-      this.log(`兑换成功`)
+      this.log(`兑换成功`,'red')
       this.success_num++
+    }else{
+      this.log(`兑换失败了`,'red')
     }
   }
 }

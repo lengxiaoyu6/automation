@@ -9,8 +9,27 @@ class Common {
     return new Promise(e => setTimeout(e, t))
   }
 
-  log(msg) {
-    console.log(msg)
+  log(msg, color = '') {
+    switch (color) {
+      case 'red':
+        console.log(`\u001B[31m${msg}\u001B[0m`);
+        break;
+      case 'green':
+        console.log(`\u001B[32m${msg}\u001B[0m`);
+        break;
+      case 'yellow':
+        console.log(`\u001B[33m${msg}\u001B[0m`);
+        break;
+      case 'blue':
+        console.log(`\u001B[34m${msg}\u001B[0m`);
+        break;
+      case 'purple':
+        console.log(`\u001B[35m${msg}\u001B[0m`);
+        break;
+      default:
+        console.log(msg)
+        break;
+    }
   }
   exit() {
     this.log(`脚本即将结束`)
@@ -55,7 +74,7 @@ class Common {
     const limit = pLimit(this.config.thread)
     const input = Array.from(list, (x, index) => limit(async () => {
       this.log(`正在执行第${index + 1}个任务`)
-       fun && await fun(x)
+      fun && await fun(x)
       // await this.wait(1500)
       this.log(`第${index + 1}次任务结束`)
     }));
