@@ -12,8 +12,8 @@
 module.exports = {
   yezi: {
     api: 'http://api.sqhyw.net:90',
-    account: '13263860590',
-    password: 'wang520QQ',
+    account: '',
+    password: '',
     scopeBlack: '192,165,162,167',
     loop: 1,
     operator: 0

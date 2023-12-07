@@ -13,8 +13,9 @@ const config = {
 const task = new TaskClass(config)
 const main = async () => {
   await apiInstance.jmLogin()
-  task.thread(Array.from({ length: 9999 }), fun)
+  await task.thread(Array.from({ length: 9999 }), fun)
 }
+
 const fun = async () => {
   let requestId
   const mobile = await apiInstance.getPhone(projectId, uid)
@@ -28,7 +29,7 @@ const fun = async () => {
     }
   }
   if (task.success_num >= success) {
-    process.exit()
+    task.exit()
   }
 }
 main()
