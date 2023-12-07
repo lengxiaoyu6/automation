@@ -1,8 +1,9 @@
 const got = require('got')
-const jmConfig = require('./config/jmConfig')
-const Common = require('./common')
+const jmConfig = require('../config/jmConfig')
+const jm = jmConfig.yezi
+const Common = require('../common')
 
-class jmClass {
+class yeziClass {
   constructor() {
     this.jmToken = ''
   }
@@ -10,7 +11,7 @@ class jmClass {
    * 获取接码平台token
    */
   async jmLogin() {
-    const res = await got(`${jmConfig.api}/api/logins?username=${jmConfig.account}&password=${jmConfig.password}`).json()
+    const res = await got(`${jm.api}/api/logins?username=${jm.account}&password=${jm.password}`).json()
     if (res.data) {
       this.jmToken = res.token
       Common.log(`ID: ${res.data[0].id} 登录成功,余额: ${res.data[0].money}元`)
@@ -20,11 +21,12 @@ class jmClass {
   }
   /**
    * 获取手机号
+   * @param {string} projectId 项目id
    *
    * @returns {string} 手机号
    */
-  async getPhone() {
-    const res = await got(`${jmConfig.api}/api/get_mobile?token=${this.jmToken}&project_id=${jmConfig.projectId}&loop=${jmConfig.loop}&operator=${jmConfig.operator}$api_id=243158&scope_black=${jmConfig.scopeBlack}`).json()
+  async getPhone(projectId) {
+    const res = await got(`${jm.api}/api/get_mobile?token=${this.jmToken}&project_id=${projectId}&loop=${jm.loop}&operator=${jm.operator}&api_id=243158&scope_black=${jm.scopeBlack}`).json()
     if (res.message === 'ok') {
       Common.log(`获取号码成功: ${res.mobile}`)
       return res.mobile
@@ -36,14 +38,15 @@ class jmClass {
    * 获取短信
    *
    * @param {string} mobile 手机号
+   * @param {string} projectId 项目id
    *
    * @returns {string} 短信码
    */
-  async getSms(mobile) {
+  async getSms(mobile, projectId) {
     let code = null
     let i = 0
     while (i < 30) {
-      const res = await got(`${jmConfig.api}/api/get_message?token=${this.jmToken}&phone_num=${mobile}&project_id=${jmConfig.projectId}`).json()
+      const res = await got(`${jm.api}/api/get_message?token=${this.jmToken}&phone_num=${mobile}&project_id=${projectId}`).json()
       if (res.data.length) {
         code = res.code
         Common.log(`${mobile}获取短信成功: ${code}`)
@@ -62,7 +65,7 @@ class jmClass {
    * @param {string} mobile 手机号
    */
   async releasePhone(mobile) {
-    const res = await got(`${jmConfig.api}/api/free_mobile?token=${this.jmToken}&phone_num=${mobile}&project_id=${jmConfig.projectId}`).json()
+    const res = await got(`${jm.api}/api/free_mobile?token=${this.jmToken}&phone_num=${mobile}&project_id=${jm.projectId}`).json()
     if (res.message === 'ok') {
       Common.log(`释放手机号: ${mobile}`)
     } else {
@@ -71,4 +74,4 @@ class jmClass {
   }
 }
 
-module.exports = jmClass
+module.exports = yeziClass

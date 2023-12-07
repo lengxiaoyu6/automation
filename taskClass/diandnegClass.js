@@ -1,14 +1,14 @@
 const got = require('got')
 const fs = require('fs')
 const path = require('path')
-const JmClass = require('./jmClass')
-const config = require('./config/config')
-const Common = require('./common')
+const Common = require('../common')
+const getApiInstance = require('../jmClass/jmClass')
+const apiInstance = getApiInstance()
 
-class TaskClass extends JmClass {
+class TaskClass {
   constructor() {
-    super()
     this.param = null
+    this.apiUrl = 'https://tb.mocentre.cn/Wap/SetWord'
   }
   async request(opt = {}) {
     try {
@@ -21,7 +21,7 @@ class TaskClass extends JmClass {
       }
       Object.assign(httpParam, opt)
       const ret = await got({
-        url: `${config.api}${httpParam?.url}`,
+        url: `${this.apiUrl}${httpParam?.url}`,
         method: httpParam?.method ? httpParam?.method : 'post',
         searchParams: httpParam?.searchParams,
         headers: httpParam?.headers,
@@ -66,7 +66,7 @@ class TaskClass extends JmClass {
     }
     Common.log(`手机号：${mobile} 登录成功`)
     this.param = result.param
-    const dataFolderPath = path.join(__dirname, 'data')
+    const dataFolderPath = path.join(__dirname, '../data')
     if (!fs.existsSync(dataFolderPath)) {
       fs.mkdirSync(dataFolderPath)
     }
@@ -93,7 +93,7 @@ class TaskClass extends JmClass {
     Common.log(`${mobile} 点灯成功`)
     if (token) {
       Common.wait(1000)
-      await this.releasePhone(mobile)
+      await apiInstance.releasePhone(mobile)
     }
   }
 }
