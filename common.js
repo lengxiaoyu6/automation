@@ -64,7 +64,8 @@ class Common {
       method: httpParam?.method ? httpParam?.method : 'post',
       searchParams: httpParam?.searchParams,
       headers: httpParam?.headers,
-      body
+      body,
+      https: { rejectUnauthorized: false }
     }).json()
     let statusCode = this.get(ret, httpParam?.statusInfo, -1)
     let result = statusCode == 200 ? ret : ret?.msg

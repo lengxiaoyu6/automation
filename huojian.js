@@ -3,8 +3,8 @@ const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
 const success = 8
-const projectId = '755933' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
-const uid = '75926' //使用豪猪平台时填写对接码，可为空
+const projectId = '75926' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
+const uid = '75926-31K9FBEKGT' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://index.amcfortune.com',
   open_id: 'on4Pr6VezLMVw92m59oBtuROLbcA',
