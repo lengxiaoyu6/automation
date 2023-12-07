@@ -3,7 +3,7 @@ const jmConfig = require('../config/jmConfig')
 const jm = jmConfig.haozhu
 const Common = require('../common')
 
-class haozhuClass {
+class haozhuClass extends Common {
   constructor() {
     this.jmToken = ''
   }
@@ -15,9 +15,9 @@ class haozhuClass {
     if (res.code == 0) {
       this.jmToken = res.token
       const money = await got(`${jm.api}/sms/?api=getSummary&token=${this.jmToken}`).json()
-      Common.log(`登录成功,余额: ${money.money}元`)
+      this.log(`登录成功,余额: ${money.money}元`)
     } else {
-      Common.log('接码平台登录失败')
+      this.log('接码平台登录失败')
     }
   }
   /**
@@ -42,11 +42,11 @@ class haozhuClass {
     }).toString()
     const res = await got(`${jm.api}/sms/?${queryString}`).json()
     if (res.code == 0) {
-      Common.log(`获取号码成功: ${res.phone}`)
+      this.log(`获取号码成功: ${res.phone}`)
       return res.phone
     } else {
-      Common.log(res.msg)
-      Common.log('获取号码失败')
+      this.log(res.msg)
+      this.log('获取号码失败')
     }
   }
   /**
@@ -64,11 +64,11 @@ class haozhuClass {
       const res = await got(`${jm.api}/sms/?api=getMessage&token=${this.jmToken}&phone=${phone}&sid=${sid}`).json()
       if (res.code == 0) {
         code = res.yzm
-        Common.log(`${phone}获取短信成功: ${code}`)
+        this.log(`${phone}获取短信成功: ${code}`)
         break
       }
-      await Common.wait(2000)
-      Common.log(`${phone}等待短信中... ${i}/30`)
+      await this.wait(2000)
+      this.log(`${phone}等待短信中... ${i}/30`)
       i++
     }
     await this.releasePhone(phone, sid)
@@ -82,7 +82,7 @@ class haozhuClass {
    */
   async releasePhone(phone, sid) {
     const res = await got(`${jm.api}/sms/?api=cancelRecv&token=${this.jmToken}&phone=${phone}&sid=${sid}`).json()
-    Common.log(res.msg)
+    this.log(res.msg)
   }
 }
 
