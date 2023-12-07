@@ -135,8 +135,8 @@ class TaskClass extends Common {
     }
     const ret = await got(params).json()
     if (ret?.success) {
-      this.log(`兑换成功${this.success_num}次`, 'red')
       this.success_num++
+      this.log(`兑换成功${this.success_num}次`, 'red')
     } else {
       this.log(`兑换失败了`, 'red')
     }
