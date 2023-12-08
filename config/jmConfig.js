@@ -22,7 +22,7 @@ module.exports = {
     api: 'http://api.haozhuma.com',
     user: '', //账号
     pass: '', //密码
-    ascription: '2', //号码类型，留空为不限制，ascription=1只取虚拟，ascription=2只取实卡
+    ascription: '', //号码类型，留空为不限制，ascription=1只取虚拟，ascription=2只取实卡
     Province: '', //号码省份，可留空
     paragraph: '', //只取号段，留空为不限制 使用 | 符号
     exclude: '' //排除号段，留空为不限制 使用 | 符号

@@ -1,6 +1,7 @@
 // common.js
 const got = require('got')
 const pLimit = require('p-limit')
+let agent = null;
 class Common {
   constructor(config = {}) {
     this.config = config
@@ -59,17 +60,36 @@ class Common {
     } else {
       body = new URLSearchParams(httpParam?.body).toString()
     }
-    const ret = await got({
+    let params = {
       url: `${this.config.apiUrl}${httpParam?.url}`,
       method: httpParam?.method ? httpParam?.method : 'post',
       searchParams: httpParam?.searchParams,
       headers: httpParam?.headers,
-      body
-    }).json()
+      body,
+      https: { rejectUnauthorized: false }
+    }
+    if (this.config.proxy) {
+      if (!agent) {
+          var HttpsProxyAgent = require("https-proxy-agent");
+          agent = new HttpsProxyAgent(this.config.proxy_url);
+      }
+      params.agent = {
+          http: agent,
+          https: agent,
+      }
+  }
+    const ret = await got(params).json()
     let statusCode = this.get(ret, httpParam?.statusInfo, -1)
     let result = statusCode == 200 ? ret : ret?.msg
     return { statusCode, result }
   }
+  randomString(len, charset='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') {
+    let str = '';
+    for (let i = 0; i < len; i++) {
+        str += charset[Math.floor(Math.random()*charset.length)];
+    }
+    return str;
+}
   async thread(list, fun) {
     const limit = pLimit(this.config.thread)
     const input = Array.from(list, (x, index) => limit(async () => {
