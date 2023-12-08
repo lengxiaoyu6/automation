@@ -7,9 +7,9 @@ const projectId = '75926' //项目id，使用椰子平台时可以直接填写�
 const uid = '75926-2MLC2WDICV' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://index.amcfortune.com',
-  open_id: 'on4Pr6a4vrC9uUR4WFTclGDJtUTA',
-  thread: 1,
-  proxy: true,
+  open_id: 'on4Pr6VezLMVw92m59oBtuROLbcA',
+  thread: 2,
+  proxy: false,
   proxy_url: 'http://192.168.31.6:8082'
 }
 const task = new TaskClass(config)
