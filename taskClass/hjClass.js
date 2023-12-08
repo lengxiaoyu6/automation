@@ -75,13 +75,25 @@ class TaskClass extends Common {
       }
       this.log(`手机号：${mobile} 登录成功`, 'bule')
       this.token = result?.data.token
-      await this.get_red_packet()
+      let ticketCode = await this.get_red_packet()
+      if (ticketCode) {
+        this.log(`获取到码子: ${ticketCode}`, 'green')
+        await this.exchange(ticketCode)
+      } else {
+        ticketCode = await this.search_red_packet()
+        if (ticketCode) {
+          this.log(`偷了一个码子: ${ticketCode}`, 'green')
+          await this.exchange(ticketCode)
+        } else {
+
+        }
+      }
     } catch (error) {
       this.log(`请求错误`)
     }
 
   }
-  async get_red_packet(mobile, code) {
+  async get_red_packet() {
     const params = {
       url: `/fundex-activity/redPacket/queryTicketCodeRequest?key=${Date.now()}`,
       method: 'get'
@@ -90,17 +102,8 @@ class TaskClass extends Common {
     if (statusCode != 200) {
       return this.log(`${result}`)
     }
-    // console.log(result?.data);
     let tiCode = result?.data.ticketCode
-    if (tiCode) {
-      this.log(`获取到码子: ${tiCode}`, 'green')
-      // this.log(`https://www.mktzb.com/mktadmin/wcode/wxAuth/cfyh?prjCode=${tiCode}`)
-      // this.log(`${this.token}`)
-      await this.exchange(tiCode)
-    } else {
-      await this.search_red_packet()
-    }
-
+    return tiCode
   }
   async search_red_packet() {
     const params = {
@@ -112,13 +115,7 @@ class TaskClass extends Common {
       return this.log(`${result}`)
     }
     let tiCode = result?.data[0]?.ticketCode
-    if (tiCode) {
-      this.log(`偷了一个码子: ${tiCode}`, 'green')
-      await this.exchange(tiCode)
-    } else {
-
-    }
-
+    return tiCode
   }
   async exchange(code) {
     const params = {

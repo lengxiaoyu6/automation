@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const file_path = path.join(__dirname,'data', 'eka.txt')   //  卡号文件
 let cards_arr = fs.readFileSync(file_path, 'utf-8').toString().split('\r\n')  //  卡号列表
+console.log(`开始兑换E卡`);
 const cards = []
 for (const item of cards_arr) {
     let k = item.split('----')
