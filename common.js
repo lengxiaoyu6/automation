@@ -95,7 +95,6 @@ class Common {
     const input = Array.from(list, (x, index) => limit(async () => {
       this.log(`正在执行第${index + 1}个任务`)
       fun && await fun(x)
-      // await this.wait(1500)
       this.log(`第${index + 1}次任务结束`)
     }));
 
