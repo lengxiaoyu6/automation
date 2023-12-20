@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const qs = require('qs')
 const Common = require('../common')
-const { R, a } = require('../utils/dcsign')
+const { R, a, aesEncode } = require('../utils/dcsign')
 
 class TaskClass extends Common {
   constructor(config = {}) {
@@ -39,15 +39,16 @@ class TaskClass extends Common {
     }
   }
   //   排老
-  async checkmobile(phone) {
+  async checkmobile(phone,apiInstance) {
     const params = {
       url: `${this.api}/innerdcapp/account/checkmobile?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
       method: 'get'
     }
     const res = await got(params).json()
     const { retcode, retmsg } = JSON.parse(a.decode(res))
-    if (retcode === 1111) {
+    if (retcode === '1111') {
       this.log(`手机号：${phone} 已注册`, 'yellow')
+     await apiInstance.releasePhone(phone,this.config.projectId)
       return false
     }
     return true
@@ -55,7 +56,7 @@ class TaskClass extends Common {
   //   发送短信
   async sendSms(phone) {
     const params = {
-      url: `${this.api}/innerdcapp/account/sendsms?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
+      url: `${this.api}/innerdcapp/account/sendsms?${qs.stringify(R.getParamsAPP({ mobile: phone, _t: Math.random() }))}`,
       method: 'get'
     }
     const res = await got(params).json()
@@ -67,18 +68,40 @@ class TaskClass extends Common {
     this.log(`手机号：${phone} 发送短信失败`, 'yellow')
   }
   //注册
-  async register(phone, code) {
-    const params = {
-      url: `${this.api}/innerdcapp/account/register${qs.stringify(R.getParamsAPP({ mobileno: phone, authcode: code, _t: Math.random() }))}`,
-      method: 'get'
+  async register(phone, code, salt = '123456') {
+    let p = {
+      "authcode": code,
+      "password": aesEncode('qwer1234', salt),
+      "mobileno": phone,
+      "appkey": "IX8pBy",
+      "appsecret": "u9KMNq",
+      "channel": "app_web",
+      "appversion": "1.0.0",
+      "market": "web",
+      ...this.config.help
     }
+    const params = {
+      url: `${this.api}/dcm-etrade-app/restful/account/registerweb`,
+      method: 'post',
+      body: `${qs.stringify(R.getParams(p))}`,
+      headers:{
+        'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.87 Safari/537.36'
+      }
+    }
+    // console.log(R.getParams(p));
     const res = await got(params).json()
-    const { retcode, retmsg } = JSON.parse(a.decode(res))
-    if (retcode == '0000') {
+    const { retcode, retmsg } = res
+    if (retcode == '0006') {
+      await this.register(phone, code, retmsg)
+    }else if(retcode == '0000'){
       this.log(`手机号：${phone} 注册成功`, 'green')
       this.success_num++
+    }else{
+      this.log(`${retmsg}`, 'green')
+   
     }
-    this.log(`手机号：${phone} 注册失败`, 'yellow')
+  
   }
 }
 
