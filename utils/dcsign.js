@@ -1,4 +1,4 @@
-R = {
+const R = {
   getSign: function (e) {
     e.sign && delete e.sign
     var t = []
@@ -327,12 +327,16 @@ module.exports = {
   a: a
 }
 
-// const qs=require('qs')
-// console.log(qs.stringify(R.getParamsAPP({
-//   "mobileno": "17502309206",
-//   "_t": Math.random(),
-// })));
-// console.log(a.decode("eyJyZXRjb2RlIjoiMTExMSIsInJldG1zZyI6IuivpeaJi+acuuWPt+W3suiiq+azqOWGjO+8jOivt+ebtOaOpeeZu+W9lSJ9"));
+// const qs = require('qs')
+// console.log(
+//   qs.stringify(
+//     R.getParamsAPP({
+//       mobileno: '17502309206',
+//       _t: Math.random()
+//     })
+//   )
+// )
+console.log(a.decode('eyJyZXRjb2RlIjoiMDAwMCIsInJldG1zZyI6IiJ9'))
 // console.log(a.encode("13571548722"));
 // console.log(R.);
 // console.log(b.a("_t=0.9371802556381867&appkey=i2n1Vu&appsecret=rYH12u&appversion=4.2.0&channel=app_web&market=AppStore&mobile=13571548722"));

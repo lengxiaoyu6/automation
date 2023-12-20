@@ -1,0 +1,85 @@
+const got = require('got')
+const fs = require('fs')
+const path = require('path')
+const qs = require('qs')
+const Common = require('../common')
+const { R, a } = require('../utils/dcsign')
+
+class TaskClass extends Common {
+  constructor(config = {}) {
+    super(config)
+    this.param = null
+    this.api = config.apiUrl
+    this.success_num = 0
+  }
+  async request(opt = {}) {
+    try {
+      let httpParam = {
+        headers: {
+          Referer: 'https://servicewechat.com/wx1b44c3ad181bde16/30/page-frame.html',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309071d)XWEB/8501',
+          xweb_xhr: 1,
+          pro: 'RedRocket',
+          pla: 'rr_windows',
+          ticket: this.token,
+          Host: 'index.amcfortune.com',
+          'Content-Type': 'application/json',
+          ver: '1.7.15'
+        },
+        statusInfo: 'code'
+      }
+      Object.assign(httpParam, opt)
+      try {
+        return await this.send(httpParam)
+      } catch (error) {
+        return { statusCode: -1 }
+      }
+    } catch (error) {
+      this.log(error)
+    }
+  }
+  //   排老
+  async checkmobile(phone) {
+    const params = {
+      url: `${this.api}/innerdcapp/account/checkmobile?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
+      method: 'get'
+    }
+    const res = await got(params).json()
+    const { retcode, retmsg } = JSON.parse(a.decode(res))
+    if (retcode === 1111) {
+      this.log(`手机号：${phone} 已注册`, 'yellow')
+      return false
+    }
+    return true
+  }
+  //   发送短信
+  async sendSms(phone) {
+    const params = {
+      url: `${this.api}/innerdcapp/account/sendsms?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
+      method: 'get'
+    }
+    const res = await got(params).json()
+    const { retcode, retmsg } = JSON.parse(a.decode(res))
+    if (retcode == '0000') {
+      this.log(`手机号：${phone} 发送短信成功`, 'green')
+      return true
+    }
+    this.log(`手机号：${phone} 发送短信失败`, 'yellow')
+  }
+  //注册
+  async register(phone, code) {
+    const params = {
+      url: `${this.api}/innerdcapp/account/register${qs.stringify(R.getParamsAPP({ mobileno: phone, authcode: code, _t: Math.random() }))}`,
+      method: 'get'
+    }
+    const res = await got(params).json()
+    const { retcode, retmsg } = JSON.parse(a.decode(res))
+    if (retcode == '0000') {
+      this.log(`手机号：${phone} 注册成功`, 'green')
+      this.success_num++
+    }
+    this.log(`手机号：${phone} 注册失败`, 'yellow')
+  }
+}
+
+module.exports = TaskClass
