@@ -2,12 +2,12 @@ const TaskClass = require('./taskClass/dcClass')
 const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
-const success = 10
+const success = 1
 const projectId = '57302' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
 const uid = '57302-ZFIXOD4LC2' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://dcapp.dcfund.com.cn',
-  thread: 5,
+  thread: 1,
   proxy: true,
   proxy_url: 'http://47.108.75.71:3011',
   help: {
@@ -25,6 +25,7 @@ const main = async () => {
 }
 
 const fun = async () => {
+  // await task.getip()
   const mobile = await apiInstance.getPhone(projectId, uid)
   if (mobile) {
     const status = await task.checkmobile(mobile, apiInstance)

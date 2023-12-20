@@ -5,6 +5,7 @@ const qs = require('qs')
 const Common = require('../common')
 const { R, a, aesEncode } = require('../utils/dcsign')
 let got_config = {}
+
 class TaskClass extends Common {
   constructor(config = {}) {
     super(config)
@@ -48,20 +49,27 @@ class TaskClass extends Common {
       this.log(error)
     }
   }
+  async getip() {}
   //   排老
   async checkmobile(phone, apiInstance) {
     const params = {
       url: `${this.api}/innerdcapp/account/checkmobile?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
       method: 'get'
     }
-    const res = await got(params).json()
-    const { retcode, retmsg } = JSON.parse(a.decode(res))
-    if (retcode === '1111') {
-      this.log(`手机号：${phone} 已注册`, 'yellow')
+    try {
+      const ip = await this.got('http://106.52.60.61:3366/ip').json()
+      const res = await this.got(params).json()
+      const { retcode, retmsg } = JSON.parse(a.decode(res))
+      if (retcode === '1111') {
+        this.log(`手机号：${phone} 已注册`, 'yellow')
+        await apiInstance.releasePhone(phone, this.config.projectId)
+        return false
+      }
+      return true
+    } catch (error) {
       await apiInstance.releasePhone(phone, this.config.projectId)
       return false
     }
-    return true
   }
   //   发送短信
   async sendSms(phone) {
@@ -69,13 +77,15 @@ class TaskClass extends Common {
       url: `${this.api}/innerdcapp/account/sendsms?${qs.stringify(R.getParamsAPP({ mobile: phone, _t: Math.random() }))}`,
       method: 'get'
     }
-    const res = await got(params).json()
-    const { retcode, retmsg } = JSON.parse(a.decode(res))
-    if (retcode == '0000') {
-      this.log(`手机号：${phone} 发送短信成功`, 'green')
-      return true
-    }
-    this.log(`手机号：${phone} 发送短信失败`, 'yellow')
+    try {
+      const res = await this.got(params).json()
+      const { retcode, retmsg } = JSON.parse(a.decode(res))
+      if (retcode == '0000') {
+        this.log(`手机号：${phone} 发送短信成功`, 'green')
+        return true
+      }
+      this.log(`手机号：${phone} 发送短信失败`, 'yellow')
+    } catch (error) {}
   }
   //注册
   async register(phone, code, salt = '123456') {
@@ -100,7 +110,13 @@ class TaskClass extends Common {
       }
     }
     // console.log(R.getParams(p));
-    const res = await got(params).json()
+    let res
+    try {
+      res = await this.got(params).json()
+    } catch (error) {
+      res = await this.got(params).json()
+    }
+
     const { retcode, retmsg } = res
     if (retcode == '0006') {
       await this.register(phone, code, retmsg)

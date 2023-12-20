@@ -1,7 +1,7 @@
 // common.js
 const got = require('got')
 const pLimit = require('p-limit')
-let agent = null;
+let agent = null
 class Common {
   constructor(config = {}) {
     this.config = config
@@ -13,23 +13,23 @@ class Common {
   log(msg, color = '') {
     switch (color) {
       case 'red':
-        console.log(`\u001B[31m${msg}\u001B[0m`);
-        break;
+        console.log(`\u001B[31m${msg}\u001B[0m`)
+        break
       case 'green':
-        console.log(`\u001B[32m${msg}\u001B[0m`);
-        break;
+        console.log(`\u001B[32m${msg}\u001B[0m`)
+        break
       case 'yellow':
-        console.log(`\u001B[33m${msg}\u001B[0m`);
-        break;
+        console.log(`\u001B[33m${msg}\u001B[0m`)
+        break
       case 'blue':
-        console.log(`\u001B[34m${msg}\u001B[0m`);
-        break;
+        console.log(`\u001B[34m${msg}\u001B[0m`)
+        break
       case 'purple':
-        console.log(`\u001B[35m${msg}\u001B[0m`);
-        break;
+        console.log(`\u001B[35m${msg}\u001B[0m`)
+        break
       default:
         console.log(msg)
-        break;
+        break
     }
   }
   exit() {
@@ -37,20 +37,20 @@ class Common {
     process.exit(0)
   }
   get(obj, name, default_value = '') {
-    let ret = default_value;
+    let ret = default_value
     if (obj?.hasOwnProperty(name)) {
-      ret = obj[name];
+      ret = obj[name]
     }
-    return ret;
+    return ret
   }
 
   pop(obj, name, default_value = '') {
-    let ret = default_value;
+    let ret = default_value
     if (obj?.hasOwnProperty(name)) {
-      ret = obj[name];
-      delete obj[name];
+      ret = obj[name]
+      delete obj[name]
     }
-    return ret;
+    return ret
   }
   async send(httpParam = {}) {
     let body = ``
@@ -70,39 +70,42 @@ class Common {
     }
     if (this.config.proxy) {
       if (!agent) {
-        var HttpsProxyAgent = require("https-proxy-agent");
-        agent = new HttpsProxyAgent(this.config.proxy_url);
+        var HttpsProxyAgent = require('https-proxy-agent')
+        agent = new HttpsProxyAgent(this.config.proxy_url)
       }
       params.agent = {
         http: agent,
-        https: agent,
+        https: agent
       }
     }
     const ret = await got(params).json()
-    let statusCode = this.get(ret, httpParam?.statusInfo, -1)
-    let result = statusCode == 200 ? ret : ret?.msg
-    return { statusCode, result }
+    return ret
+    // let statusCode = this.get(ret, httpParam?.statusInfo, -1)
+    // let result = statusCode == 200 ? ret : ret?.msg
+    // return { statusCode, result }
   }
   randomString(len, charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') {
-    let str = '';
+    let str = ''
     for (let i = 0; i < len; i++) {
-      str += charset[Math.floor(Math.random() * charset.length)];
+      str += charset[Math.floor(Math.random() * charset.length)]
     }
-    return str;
+    return str
   }
- randomInteger(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  randomInteger(min, max) {
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
   }
   async thread(list, fun) {
     const limit = pLimit(this.config.thread)
-    const input = Array.from(list, (x, index) =>  limit(async () => {
-      this.log(`正在执行第${index + 1}个任务`)
-      fun && await fun(x)
-      this.log(`第${index + 1}次任务结束`)
-    }));
-    await Promise.all(input);
+    const input = Array.from(list, (x, index) =>
+      limit(async () => {
+        this.log(`正在执行第${index + 1}个任务`)
+        fun && (await fun(x))
+        this.log(`第${index + 1}次任务结束`)
+      })
+    )
+    await Promise.all(input)
   }
 }
 
