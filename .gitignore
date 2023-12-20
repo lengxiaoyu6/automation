@@ -43,6 +43,8 @@ jspm_packages/
 config/
 data/
 config/
+config/jmConfig.json
+jmClass
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -120,3 +122,5 @@ dist
 
 config/database.json
 config/60surl.json
+config/jmConfig.js
+config/jmConfig.js
