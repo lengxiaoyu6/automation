@@ -70,34 +70,38 @@ class Common {
     }
     if (this.config.proxy) {
       if (!agent) {
-          var HttpsProxyAgent = require("https-proxy-agent");
-          agent = new HttpsProxyAgent(this.config.proxy_url);
+        var HttpsProxyAgent = require("https-proxy-agent");
+        agent = new HttpsProxyAgent(this.config.proxy_url);
       }
       params.agent = {
-          http: agent,
-          https: agent,
+        http: agent,
+        https: agent,
       }
-  }
+    }
     const ret = await got(params).json()
     let statusCode = this.get(ret, httpParam?.statusInfo, -1)
     let result = statusCode == 200 ? ret : ret?.msg
     return { statusCode, result }
   }
-  randomString(len, charset='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') {
+  randomString(len, charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789') {
     let str = '';
     for (let i = 0; i < len; i++) {
-        str += charset[Math.floor(Math.random()*charset.length)];
+      str += charset[Math.floor(Math.random() * charset.length)];
     }
     return str;
-}
+  }
+ randomInteger(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
   async thread(list, fun) {
     const limit = pLimit(this.config.thread)
-    const input = Array.from(list, (x, index) => limit(async () => {
+    const input = Array.from(list, (x, index) =>  limit(async () => {
       this.log(`正在执行第${index + 1}个任务`)
       fun && await fun(x)
       this.log(`第${index + 1}次任务结束`)
     }));
-
     await Promise.all(input);
   }
 }

@@ -1,5 +1,4 @@
 const TaskClass = require('./taskClass/hjClass')
-const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
 const success = 10
@@ -7,8 +6,8 @@ const projectId = '75926' //项目id，使用椰子平台时可以直接填写�
 const uid = '75926-2MLC2WDICV' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://index.amcfortune.com',
-  open_id: 'on4Pr6VezLMVw92m59oBtuROLbcA',
-  thread: 2,
+  open_id: 'on4Pr6ZGV9H_vWh_Rqrj7DRbiJN8',
+  thread: 1,
   proxy: false,
   proxy_url: 'http://192.168.31.6:8082'
 }
@@ -33,5 +32,9 @@ const fun = async () => {
   if (task.success_num >= success) {
     task.exit()
   }
+  // await task.demo()
+  //  if (task.success_num >= success) {
+  //   task.exit()
+  // }
 }
 main()

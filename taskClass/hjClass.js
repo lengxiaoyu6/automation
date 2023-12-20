@@ -138,5 +138,16 @@ class TaskClass extends Common {
       this.log(`兑换失败了`, 'red')
     }
   }
+  async demo() {
+    await this.wait(1500)
+    this.log('测试数据1')
+    await this.demo1()
+  }
+  async demo1() {
+    await this.wait(this.randomInteger(2,5)*1000)
+    this.success_num++
+    this.log(`测试数据2,${this.success_num}`)
+   
+  }
 }
 module.exports = TaskClass

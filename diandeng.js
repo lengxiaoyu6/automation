@@ -4,8 +4,8 @@ const path = require('path')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
 
-const numberOfTasks = 1 //任务数量
-const registrationStatus = false //是否开启注册,false为养号
+const numberOfTasks = 200 //任务数量
+const registrationStatus = true //是否开启注册,false为养号
 const projectId = '51000' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
 const uid = '' //使用豪猪平台时填写对接码，可为空
 const config = {
