@@ -7,8 +7,8 @@ const projectId = '57302' //项目id，使用椰子平台时可以直接填写�
 const uid = '57302-ZFIXOD4LC2' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://dcapp.dcfund.com.cn',
-  thread: 5,
-  proxy: true,
+  thread: 2,
+  proxy: false,
   proxy_url: 'http://47.108.75.71:3011',
   help: {
     activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66',
