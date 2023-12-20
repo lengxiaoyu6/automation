@@ -15,7 +15,6 @@ class TaskClass extends Common {
     if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent')
       const agent = new HttpsProxyAgent(config.proxy_url)
-
       got_config.agent = {
         http: agent,
         https: agent
@@ -48,6 +47,10 @@ class TaskClass extends Common {
     } catch (error) {
       this.log(error)
     }
+  }
+  async getip() {
+    const ip = await this.got('https://www.52dgb.cn/').text()
+    console.log(ip)
   }
   //   排老
   async checkmobile(phone, apiInstance) {
