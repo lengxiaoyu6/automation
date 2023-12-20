@@ -4,13 +4,18 @@ const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
 const success = 10
 const projectId = '57302' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
-const uid = '' //使用豪猪平台时填写对接码，可为空
+const uid = '57302-ZFIXOD4LC2' //使用豪猪平台时填写对接码，可为空
 const config = {
   apiUrl: 'https://dcapp.dcfund.com.cn',
   thread: 5,
   proxy: true,
-  proxy_url: 'http://192.168.31.6:8082',
-  help:{"activityid":"1a61fca2-6e28-4ea9-a42f-64c17a727d66","s":"NfMzea","t":"1703071641093","uniqueid":"efc2ffad-b56d-4f1f-a066-4b4cc0e9cf2c"},
+  proxy_url: 'http://47.108.75.71:3011',
+  help: {
+    activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66',
+    s: 'RnMz6z',
+    t: '1703072715386',
+    uniqueid: 'f35d13a5-cacc-4e7d-894b-794e8406a20a'
+  },
   projectId
 }
 const task = new TaskClass(config)
@@ -22,7 +27,7 @@ const main = async () => {
 const fun = async () => {
   const mobile = await apiInstance.getPhone(projectId, uid)
   if (mobile) {
-    const status = await task.checkmobile(mobile,apiInstance)
+    const status = await task.checkmobile(mobile, apiInstance)
     if (status) {
       const smsStatus = await task.sendSms(mobile)
       if (smsStatus) {
