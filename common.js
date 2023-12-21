@@ -123,6 +123,9 @@ class Common {
   async runTask(task, fun) {
     this.runningTasks++
     try {
+      if (this.config.num < 1) {
+        this.config.num = 0
+      }
       this.config.num += 1
       await fun(task)
     } catch (error) {
