@@ -12,15 +12,13 @@ class TaskClass extends Common {
     this.param = null
     this.api = config.apiUrl
     this.success_num = 0
+    this.runningTasks = 0
+    this.num = 1
     if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent')
-<<<<<<< HEAD
       const HttpProxyAgent = require('http-proxy-agent')
       const https = new HttpsProxyAgent(config.proxy_url)
       const http = new HttpProxyAgent(config.proxy_url)
-=======
-      const agent = new HttpsProxyAgent(config.proxy_url)
->>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
       got_config.agent = {
         http: http,
         https: https
@@ -54,14 +52,15 @@ class TaskClass extends Common {
       this.log(error)
     }
   }
-<<<<<<< HEAD
-  async getip() {}
-=======
   async getip() {
-    const ip = await this.got('https://www.52dgb.cn/').text()
-    console.log(ip)
+    if (this.i == 2 || this.i == 5) {
+      console.log('这是一个失败的数据')
+    } else {
+      console.log('这是一个成功的数据')
+      this.success_num++
+    }
+    this.config.num++
   }
->>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
   //   排老
   async checkmobile(phone, apiInstance) {
     const ip = await this.got(`http://106.52.60.61:3366/ip`).json()
@@ -71,21 +70,18 @@ class TaskClass extends Common {
       method: 'get'
     }
     try {
-<<<<<<< HEAD
-=======
-      const ip = await got('http://106.52.60.61:3366/ip').json()
-      console.log(ip)
->>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
       const res = await this.got(params).json()
       const { retcode, retmsg } = JSON.parse(a.decode(res))
       if (retcode === '1111') {
         this.log(`手机号：${phone} 已注册`, 'yellow')
         await apiInstance.releasePhone(phone, this.config.projectId)
+        this.config.num--
         return false
       }
       return true
     } catch (error) {
       await apiInstance.releasePhone(phone, this.config.projectId)
+      this.config.num--
       return false
     }
   }
@@ -103,7 +99,10 @@ class TaskClass extends Common {
         return true
       }
       this.log(`手机号：${phone} 发送短信失败`, 'yellow')
-    } catch (error) {}
+      this.config.num--
+    } catch (error) {
+      this.config.num--
+    }
   }
   //注册
   async register(phone, code, salt = '123456') {
@@ -133,6 +132,7 @@ class TaskClass extends Common {
       res = await this.got(params).json()
     } catch (error) {
       res = await this.got(params).json()
+      this.config.num--
     }
 
     const { retcode, retmsg } = res
@@ -143,6 +143,7 @@ class TaskClass extends Common {
       this.success_num++
     } else {
       this.log(`${retmsg}`, 'green')
+      this.config.num--
     }
   }
 }

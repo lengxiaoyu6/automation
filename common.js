@@ -5,6 +5,7 @@ let agent = null
 class Common {
   constructor(config = {}) {
     this.config = config
+    this.runningTasks = 0
   }
   async wait(t) {
     return new Promise(e => setTimeout(e, t))
@@ -96,16 +97,43 @@ class Common {
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
+  // async thread(list, fun) {
+  //   const limit = pLimit(this.config.thread)
+  //   const input = Array.from(list, (x, index) =>
+  //     limit(async () => {
+  //       this.runningTasks++
+  //       this.log(`正在执行第${index + 1}个任务`)
+  //       fun && (await fun(x))
+  //       this.log(`第${index + 1}次任务结束`)
+  //       this.runningTasks--
+  //       console.log(this.runningTasks)
+  //     })
+  //   )
+  //   await Promise.all(input)
+  // }
   async thread(list, fun) {
-    const limit = pLimit(this.config.thread)
-    const input = Array.from(list, (x, index) =>
-      limit(async () => {
-        this.log(`正在执行第${index + 1}个任务`)
-        fun && (await fun(x))
-        this.log(`第${index + 1}次任务结束`)
-      })
-    )
-    await Promise.all(input)
+    this.taskQueue = [...list]
+    const promises = []
+    while (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num < this.config.success) {
+      const task = this.taskQueue.shift()
+      promises.push(this.runTask(task, fun))
+    }
+    await Promise.all(promises)
+  }
+  async runTask(task, fun) {
+    this.runningTasks++
+    try {
+      this.config.num += 1
+      await fun(task)
+    } catch (error) {
+      this.taskQueue.push(task)
+    }
+    this.runningTasks--
+    console.log(`i:${this.config.num}----success: ${this.config.success} ----${this.config.num < this.config.success}`)
+    if (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num < this.config.success) {
+      const task = this.taskQueue.shift()
+      return this.runTask(task, fun)
+    }
   }
 }
 

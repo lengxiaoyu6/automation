@@ -2,20 +2,17 @@ const TaskClass = require('./taskClass/dcClass')
 const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
-const success = 9
-const projectId = '57302' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
+const success = 5
+const projectId = '2401' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
 const uid = '57302-KK7BWGO0D5' //使用豪猪平台时填写对接码，可为空
 const config = {
+  num: 0,
   apiUrl: 'http://dcapp.dcfund.com.cn',
-  thread: 1,
+  thread: 3,
   proxy: false,
+  success,
   proxy_url: 'http://47.108.75.71:3011',
-  help: {
-    activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66',
-    s: 'RnMz6z',
-    t: '1703072715386',
-    uniqueid: 'f35d13a5-cacc-4e7d-894b-794e8406a20a'
-  },
+  help: { activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66', s: 'NRJVvm', t: '1703138871824', uniqueid: '0ec95a43-4892-4dc8-902a-8d867209c4c7' },
   projectId
 }
 const task = new TaskClass(config)
@@ -26,6 +23,7 @@ const main = async () => {
 
 const fun = async () => {
   // await task.getip()
+
   const mobile = await apiInstance.getPhone(projectId, uid)
   if (mobile) {
     const status = await task.checkmobile(mobile, apiInstance)
@@ -37,6 +35,7 @@ const fun = async () => {
           const regStatus = await task.register(mobile, code)
         } else {
           console.log('获取验证码失败，重新获取')
+          this.config.num--
         }
       }
     }
