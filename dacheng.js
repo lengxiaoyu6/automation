@@ -10,7 +10,7 @@ const config = {
   num: 0,
   apiUrl: 'http://dcapp.dcfund.com.cn',
   thread: 1,
-  proxy: true,
+  proxy: false,
   success,
   proxy_url: 'http://47.108.75.71:3011',
   help: { activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66', s: 'NRJVvm', t: '1703138871824', uniqueid: '0ec95a43-4892-4dc8-902a-8d867209c4c7' },

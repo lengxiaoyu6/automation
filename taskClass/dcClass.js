@@ -141,6 +141,7 @@ class TaskClass extends Common {
     } else if (retcode == '0000') {
       this.log(`手机号：${phone} 注册成功`, 'green')
       this.success_num++
+      return true
     } else {
       this.log(`${retmsg}`, 'green')
       this.config.num--
