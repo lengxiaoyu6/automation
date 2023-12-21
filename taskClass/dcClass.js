@@ -14,9 +14,13 @@ class TaskClass extends Common {
     this.success_num = 0
     if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent')
+<<<<<<< HEAD
       const HttpProxyAgent = require('http-proxy-agent')
       const https = new HttpsProxyAgent(config.proxy_url)
       const http = new HttpProxyAgent(config.proxy_url)
+=======
+      const agent = new HttpsProxyAgent(config.proxy_url)
+>>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
       got_config.agent = {
         http: http,
         https: https
@@ -50,7 +54,14 @@ class TaskClass extends Common {
       this.log(error)
     }
   }
+<<<<<<< HEAD
   async getip() {}
+=======
+  async getip() {
+    const ip = await this.got('https://www.52dgb.cn/').text()
+    console.log(ip)
+  }
+>>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
   //   排老
   async checkmobile(phone, apiInstance) {
     const ip = await this.got(`http://106.52.60.61:3366/ip`).json()
@@ -60,6 +71,11 @@ class TaskClass extends Common {
       method: 'get'
     }
     try {
+<<<<<<< HEAD
+=======
+      const ip = await got('http://106.52.60.61:3366/ip').json()
+      console.log(ip)
+>>>>>>> 8d94e16b18d524f0637ba998c4a5cdd7a157d084
       const res = await this.got(params).json()
       const { retcode, retmsg } = JSON.parse(a.decode(res))
       if (retcode === '1111') {
