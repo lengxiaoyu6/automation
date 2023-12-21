@@ -97,24 +97,13 @@ class Common {
     max = Math.floor(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
-  // async thread(list, fun) {
-  //   const limit = pLimit(this.config.thread)
-  //   const input = Array.from(list, (x, index) =>
-  //     limit(async () => {
-  //       this.runningTasks++
-  //       this.log(`正在执行第${index + 1}个任务`)
-  //       fun && (await fun(x))
-  //       this.log(`第${index + 1}次任务结束`)
-  //       this.runningTasks--
-  //       console.log(this.runningTasks)
-  //     })
-  //   )
-  //   await Promise.all(input)
-  // }
   async thread(list, fun) {
+    if (this.config.thread > this.config.success) {
+      this.config.thread = this.config.success
+    }
     this.taskQueue = [...list]
     const promises = []
-    while (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num < this.config.success) {
+    while (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num <= this.config.success) {
       const task = this.taskQueue.shift()
       promises.push(this.runTask(task, fun))
     }
@@ -122,8 +111,8 @@ class Common {
   }
   async runTask(task, fun) {
     this.runningTasks++
+    this.config.num += 1
     try {
-      this.config.num = this.config.num < 1 ? 0 : (this.config.num += 1)
       await fun(task)
     } catch (error) {
       this.taskQueue.push(task)
