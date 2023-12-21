@@ -44,7 +44,6 @@ config/
 data/
 config/
 config/jmConfig.json
-jmClass
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
