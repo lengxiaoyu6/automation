@@ -112,13 +112,14 @@ class Common {
   async runTask(task, fun) {
     this.runningTasks++
     this.config.num += 1
+    console.log(`当前运行线程：${this.runningTasks}，成功数量：${this.success_num}，总数量：${this.config.num}`)
     try {
       await fun(task)
     } catch (error) {
       this.taskQueue.push(task)
     }
     this.runningTasks--
-    if (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num < this.config.success) {
+    if (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num <= this.config.success) {
       const task = this.taskQueue.shift()
       return this.runTask(task, fun)
     }

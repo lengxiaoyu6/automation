@@ -1,13 +1,13 @@
 const TaskClass = require('./taskClass/dcClass')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
-const success = 5
+const success = 4
 const projectId = '2401' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
 const uid = '57302-KK7BWGO0D5' //使用豪猪平台时填写对接码，可为空
 const config = {
   num: 0,
   apiUrl: 'http://dcapp.dcfund.com.cn',
-  thread: 2,
+  thread: 10,
   proxy: true,
   success,
   proxy_url: 'http://192.168.1.32:8083/help/proxy',
