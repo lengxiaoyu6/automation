@@ -2,13 +2,13 @@ const TaskClass = require('./taskClass/dcClass')
 const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
-const success = 1
+const success = 9
 const projectId = '57302' //项目id，使用椰子平台时可以直接填写专属对接码，使用豪猪请将对接码填写至uid
-const uid = '57302-ZFIXOD4LC2' //使用豪猪平台时填写对接码，可为空
+const uid = '57302-KK7BWGO0D5' //使用豪猪平台时填写对接码，可为空
 const config = {
-  apiUrl: 'https://dcapp.dcfund.com.cn',
+  apiUrl: 'http://dcapp.dcfund.com.cn',
   thread: 1,
-  proxy: true,
+  proxy: false,
   proxy_url: 'http://47.108.75.71:3011',
   help: {
     activityid: '1a61fca2-6e28-4ea9-a42f-64c17a727d66',

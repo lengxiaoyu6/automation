@@ -14,11 +14,12 @@ class TaskClass extends Common {
     this.success_num = 0
     if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent')
-      const agent = new HttpsProxyAgent(config.proxy_url)
-
+      const HttpProxyAgent = require('http-proxy-agent')
+      const https = new HttpsProxyAgent(config.proxy_url)
+      const http = new HttpProxyAgent(config.proxy_url)
       got_config.agent = {
-        http: agent,
-        https: agent
+        http: http,
+        https: https
       }
     }
     this.got = got.extend({ https: { rejectUnauthorized: false }, ...got_config })
@@ -52,12 +53,13 @@ class TaskClass extends Common {
   async getip() {}
   //   排老
   async checkmobile(phone, apiInstance) {
+    const ip = await this.got(`http://106.52.60.61:3366/ip`).json()
+    this.log(`获取到ip：${ip.ip}`, 'green')
     const params = {
       url: `${this.api}/innerdcapp/account/checkmobile?${qs.stringify(R.getParamsAPP({ mobileno: phone, _t: Math.random() }))}`,
       method: 'get'
     }
     try {
-      const ip = await this.got('http://106.52.60.61:3366/ip').json()
       const res = await this.got(params).json()
       const { retcode, retmsg } = JSON.parse(a.decode(res))
       if (retcode === '1111') {
