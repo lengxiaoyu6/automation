@@ -129,7 +129,6 @@ class Common {
       this.taskQueue.push(task)
     }
     this.runningTasks--
-    console.log(`i:${this.config.num}----success: ${this.config.success} ----${this.config.num < this.config.success}`)
     if (this.runningTasks < this.config.thread && this.taskQueue.length > 0 && this.success_num < this.config.success && this.config.num < this.config.success) {
       const task = this.taskQueue.shift()
       return this.runTask(task, fun)
