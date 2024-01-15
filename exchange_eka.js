@@ -14,7 +14,7 @@ for (const item of cards_arr) {
         cards.push(k[0]);
     }
 }
-const CK = 'pt_key=app_openAAJlc-ZCADASdDtBjgN7dtK6OybLbwfiO4ziHU93ZVd7gDE1ZQ6yyoXfhI4XOSOBkOrKFX1iGGc; pt_pin=13541927086_p;'     //  填写自己的CK
+const CK = 'pt_key=app_openAAJlol8kADAI0WPBsdpGLoXsOLtwaqTFkDUMss7YtoEXf5Azi61aV9jKLgASiMBAFHUsee3NIcI; pt_pin=13541927086_p;'     //  填写自己的CK
 const wait_time = 3000   //  等待时间
 const getH5st = async (params) => {
     try {

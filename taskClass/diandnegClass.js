@@ -6,7 +6,7 @@ const getApiInstance = require('../jmClass/jmClass')
 const apiInstance = getApiInstance()
 
 class TaskClass extends Common {
-  constructor(config={}) {
+  constructor(config = {}) {
     super(config)
     this.param = null
   }
@@ -32,7 +32,8 @@ class TaskClass extends Common {
         phone: mobile,
         gameKey: 'jingcheng2023',
         param: 'hqZzqbB6c9qxp3Gof3zVoZJouW63kKyskt2Cm36koKSbz5acxH2I2L7deah_nq-hfXmtr8aAvKiSu4rOhKB6pZq5Z6C8aJrPxtCTqn94q7J6n9qixJG4n5O5pdB-oaCpnbmqpa95fN3IqnZhloyvoYCgpKyspsCsk5ZqupqPcqCCzKGbrJ-pzL26nJx7ntKtlY3brK98sKmU0YvRmKJlZZu1e2jFpIjWxqanmpV7yq6To7iisqabZJOrsNh-pGWkkpSmp7yNY8-tzaCmlovaq5eHoHY'
-      }
+      },
+      method:'post'
     }
     const { statusCode, result } = await this.request(params)
     if (statusCode !== 200) {
@@ -66,7 +67,35 @@ class TaskClass extends Common {
     fs.appendFileSync(path.join(dataFolderPath, 'param.txt'), `${mobile}@${this.param}\n`)
     this.log(`${mobile}准备点灯`)
     this.wait(1000)
-    await this.receive(mobile)
+    await this.getMyPrize(mobile)
+  }
+
+  // 奖品列表
+  async getMyPrize(mobile, token = null) {
+    const params = {
+      url: '/getMyPrize',
+      body: {
+        gameKey: 'jingcheng2023',
+        param: this.param || token
+      }
+    }
+    const { statusCode, result, prize_list } = await this.request(params)
+    if (statusCode !== 200) {
+      return this.log(`${result}`)
+    }
+    if (result?.prize_list.length > 0) {
+      this.log(result?.prize_list.map(item => item.prize_name + '----' + item.prize_pwd))
+      // this.log(`${result?.prize_list[0]?.prize_name}----${result?.prize_list[0]?.prize_pwd}`)
+      // console.log(mobile);
+      // fs.appendFileSync(path.join(dataFolderPath, 'jd.txt'), `${result?.prize_list[0].prize_name}----${result?.prize_list[0].prize_pwd}\n`)
+    } else {
+      this.log(`${JSON.stringify(result?.prize_list)}`)
+    }
+
+    if (token) {
+      Common.wait(1000)
+      await this.releasePhone(mobile)
+    }
   }
   /**
    * 点灯
@@ -89,7 +118,7 @@ class TaskClass extends Common {
       await apiInstance.releasePhone(mobile)
     }
   }
-  
+
 
 }
 module.exports = TaskClass
