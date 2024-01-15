@@ -53,13 +53,10 @@ class TaskClass extends Common {
     }
   }
   async getip() {
-    if (this.i == 2 || this.i == 5) {
-      console.log('这是一个失败的数据')
-    } else {
-      console.log('这是一个成功的数据')
-      this.success_num++
-    }
-    this.config.num++
+    const ip = await this.got(`http://106.52.60.61:3366/ip`).json()
+    this.log(`获取到ip：${ip.ip}`, 'green')
+    this.success_num++
+    this.wait(1500)
   }
   //   排老
   async checkmobile(phone, apiInstance) {
@@ -141,6 +138,7 @@ class TaskClass extends Common {
     } else if (retcode == '0000') {
       this.log(`手机号：${phone} 注册成功`, 'green')
       this.success_num++
+      return true
     } else {
       this.log(`${retmsg}`, 'green')
       this.config.num--

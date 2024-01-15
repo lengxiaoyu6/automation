@@ -1,5 +1,4 @@
 const TaskClass = require('./taskClass/dcClass')
-const pLimit = require('p-limit')
 const getApiInstance = require('./jmClass/jmClass')
 const apiInstance = getApiInstance()
 const success = 30
